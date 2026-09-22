@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeAlpha | NetSentry — Live Packet Sniffer</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="app">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">◈</div>
+      <div>
+        <div class="brand-title">NetSentry</div>
+        <div class="brand-sub">CodeAlpha // Task 1</div>
+      </div>
+    </div>
+
+    <div class="mode-pill" id="modePill">
+      <span class="dot"></span><span id="modeLabel">Checking engine…</span>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn" class="btn btn-primary">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Start Capture
+      </button>
+      <button id="stopBtn" class="btn btn-danger" disabled>
+        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg> Stop
+      </button>
+      <button id="clearBtn" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-1 0v14H9V6"/></svg> Clear
+      </button>
+      <a id="exportBtn" class="btn btn-ghost" href="/api/export">
+        <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg> Export CSV
+      </a>
+    </div>
+
+    <div class="side-stats">
+      <div class="side-stat">
+        <div class="side-stat-label">Packets</div>
+        <div class="side-stat-value" id="statPackets">0</div>
+      </div>
+      <div class="side-stat">
+        <div class="side-stat-label">Data Captured</div>
+        <div class="side-stat-value" id="statBytes">0 B</div>
+      </div>
+      <div class="side-stat alert">
+        <div class="side-stat-label">Alerts</div>
+        <div class="side-stat-value" id="statAlerts">0</div>
+      </div>
+      <div class="side-stat">
+        <div class="side-stat-label">Uptime</div>
+        <div class="side-stat-value" id="statUptime">00:00:00</div>
+      </div>
+    </div>
+
+    <div class="filter-box">
+      <div class="filter-title">Filter</div>
+      <input id="filterInput" placeholder="IP, port, protocol…" autocomplete="off">
+      <div class="chip-row" id="protoChips"></div>
+    </div>
+
+    <div class="sidebar-footer">Educational use only · Sniff traffic you own or are authorized to monitor.</div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1>Live Traffic Analysis</h1>
+        <p>Real-time packet capture &amp; anomaly detection dashboard</p>
+      </div>
+      <div class="clock" id="clock">--:--:--</div>
+    </header>
+
+    <section class="grid-top">
+      <div class="panel chart-panel">
+        <div class="panel-head"><h2>Throughput</h2><span class="tag">packets / sec</span></div>
+        <canvas id="throughputChart"></canvas>
+      </div>
+      <div class="panel chart-panel">
+        <div class="panel-head"><h2>Protocol Mix</h2><span class="tag">live</span></div>
+        <canvas id="protocolChart"></canvas>
+      </div>
+      <div class="panel chart-panel">
+        <div class="panel-head"><h2>Top Talkers</h2><span class="tag">by bytes</span></div>
+        <canvas id="talkersChart"></canvas>
+      </div>
+    </section>
+
+    <section class="grid-bottom">
+      <div class="panel table-panel">
+        <div class="panel-head">
+          <h2>Packet Stream</h2>
+          <span class="tag" id="tableCount">0 shown</span>
+        </div>
+        <div class="table-wrap">
+          <table id="packetTable">
+            <thead>
+              <tr>
+                <th>Time</th><th>Src</th><th>Dst</th><th>Proto</th>
+                <th>SPort</th><th>DPort</th><th>Len</th><th>Info</th>
+              </tr>
+            </thead>
+            <tbody id="packetBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel detail-panel">
+        <div class="panel-head"><h2>Inspector</h2><span class="tag">click a row</span></div>
+        <div id="inspector" class="inspector-empty">Select a packet from the stream to inspect its payload &amp; metadata.</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/socket.io-client@4/dist/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
